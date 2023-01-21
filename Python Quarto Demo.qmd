@@ -1,0 +1,141 @@
+---
+title: 'Quarto Python Demo'
+author: 'David M Vermillion'
+date: today
+date-format: "D MMMM YYYY"
+format:
+    pdf:
+        toc: true
+        number-sections: false
+        include-in-header:
+            text: |
+                \addtokomafont{disposition}{\rmfamily}
+        fig-pos: 'H'
+jupyter: python3
+---
+
+
+```{python}
+#| echo: false
+
+# Workspace initialization
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+from scipy.interpolate import interp1d
+from IPython.display import Markdown as md
+
+# Import data file
+data = pd.read_csv("FilteredExport.csv")
+data = data.rename(columns = {'index': 'Months', 'x': 'Sunspots'})
+
+# Convert data
+cubic_interpolation_model = interp1d(data['Months'], data['Sunspots'], kind = "cubic")
+newx = np.linspace(data['Months'].min(), data['Months'].max(), 500)
+newy = cubic_interpolation_model(newx)
+
+
+```
+
+\newpage
+
+
+# Executive Summary
+
+[Quarto](https://quarto.org) is amazing! While you can generate PDFs from Jupyter Notebooks, the formatting options are extremely minimal and the result is not a polished product.
+
+Quarto allows you to create a product based off of [Pandoc](https://pandoc.org) that you can proudly present to stakeholders. This demo is outputting to PDF, where one of my favorite features is the ability to scale images without pixelation artifacts. Additionally, HTML, .docx, and various presenter files are also options. That list also includes a wealth of [additional formats](https://quarto.org/docs/gallery/) and the ability to publish dynamic content to websites.
+
+# LaTeX Table Demo
+
+\begin{table}[!h]
+\caption{\label{first-five-data-entries}First 5 Data Entries}
+\begin{tabular*}{3in}{p{2in}|p{0.5in}}
+ First Five Sunspot Counts & Months  \\
+\midrule
+ 58 & 1 \\
+ 62.6 & 2 \\
+ 70 & 3  \\
+ 55.7 & 4  \\
+ 85 & 5  \\
+\end{tabular*}
+\end{table}
+
+# Code Based Text Field
+
+```{python}
+#| echo: false
+
+md("You can generate text to output to markdown through a code cell. You can even format text around it in a LaTeX formula. ($Average\ Sunspot\ Value = %.4f\ sunspots\ per\ month$). An example $\sqrt{R_a^2} \\neq %.4f$. This is because $R_a^2$ is on a 0 to 1 scale."%(np.mean(data['Sunspots']), np.max(data['Months'])))
+
+```
+
+
+# Plot Demo
+
+```{python}
+#| echo: false
+#| fig-cap:
+#|   - "Jagged Lines in Original Line Chart"
+
+# Plot raw data
+fig1, ax = plt.subplots()
+plt.plot(data['Months'], data['Sunspots'], color = '#e34234')
+ax.set_title('Sunspots from 1749 and 1750', fontsize = 30).set_color('#505050')
+ax.tick_params(axis='y', which='both', right=False,
+                left=False, colors = '#101010')
+ax.tick_params(axis='x', which='both', bottom=False, colors = '#101010')
+for pos in ['right', 'top', 'left', 'bottom']:
+   plt.gca().spines[pos].set_visible(False)
+plt.xticks([])
+plt.yticks([])
+
+plt.show();
+```
+
+```{python}
+#| echo: false
+#| fig-cap:
+#|   - "Smoothed Points from Interpolated Data"
+
+# Plot smoothed data
+fig2, ax = plt.subplots()
+plt.plot(newx, newy, color = '#e34234')
+ax.set_title('Sunspots from 1749 and 1750', fontsize = 30).set_color('#505050')
+ax.tick_params(axis='y', which='both', right=False,
+                left=False, colors = '#101010')
+ax.tick_params(axis='x', which='both', bottom=False, colors = '#101010')
+for pos in ['right', 'top', 'left', 'bottom']:
+   plt.gca().spines[pos].set_visible(False)
+plt.xticks([])
+plt.yticks([])
+
+plt.show();
+```
+
+# Format Comparisons
+
+You can [format](https://quarto.org/docs/authoring/markdown-basics.html) text per Markdown standards, with LaTeX, and additional standards. Some common examples include *italics*, **bold**, superscript^sup^, subscript~submarine~, ~~strikethrough~~, and `code snippets`. \
+
+Markdwon headers follow standard levels. For example, the first 4 levels look like this:
+
+# Header 1
+## Header 2
+### Header 3
+#### Header 4
+
+## Lists
+
+Additionally, lists can be unordered or ordered.
+
+- $H_0: model\ slope = 0$
+- $H_a: model\ slope \neq 0$
+- Significance $\alpha = 0.1$
+
+1. Ice cream
+2. Cookies
+3. Cake
+
+# Conclusion
+
+Quarto is incredibly powerful. This is a quick example of how you can easily create a polished PDF report using Python as your programming language and choose multiple ways to cleanly present your findings.
