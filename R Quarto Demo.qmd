@@ -1,0 +1,149 @@
+---
+title: "Quarto R Demo"
+author: "David M Vermillion"
+date: today
+date-format: "D MMMM YYYY"
+format:
+    pdf:
+        toc: true
+        number-sections: false
+        include-in-header:
+            text: |
+                \addtokomafont{disposition}{\rmfamily}
+        fig-pos: 'H'
+editor: source
+---
+
+\newpage
+
+```{r}
+#| echo: false
+#| include: false
+
+# Workspace Initialization -------------------------------------------------
+
+packages <- c('tidyverse', 'ggalt')
+lapply(packages, library, character.only = TRUE)
+
+# ggplot Theme ----
+theme_void2 <- function(base_size = 12,
+                          base_family = "",
+                          base_line_size = base_size / 170,
+                          base_rect_size = base_size / 170){
+  theme_minimal(base_size = base_size, 
+                base_family = base_family,
+                base_line_size = base_line_size) %+replace%
+    theme(
+      axis.title.y = element_blank(),
+      axis.title.x = element_blank(),
+      axis.text = element_blank(),
+      axis.line = element_blank(),
+      axis.ticks = element_blank(),
+      plot.title = element_text(hjust = 0.5, size = 28, color = "grey40",
+                                margin =
+                                  margin(t = 0, r = 0, b = 10, l = 0,
+                                         unit = "pt")),
+      panel.grid = element_blank(),
+      plot.subtitle = element_text(hjust = 0.5, size = 20, color = "grey40",
+                                   margin =
+                                     margin(t = 10, r = 0, b = 0, l = 0,
+                                            unit = "pt")),
+      legend.title = element_text(size = 15, color = "grey40"),
+      legend.text = element_text(size = 12, color = "grey30"),
+      complete = TRUE
+    )
+}
+
+# Load Data ----
+
+data_raw <- as_tibble(sunspot.month)
+data <- head(data_raw, 24)
+data$index = 1:length(data$x)
+
+```
+
+
+# Executive Summary
+
+[Quarto](https://quarto.org) is amazing! While you can generate PDFs from Jupyter Notebooks, the formatting options are extremely minimal and the result is not a polished product.
+
+Quarto allows you to create a product based off of [Pandoc](https://pandoc.org) that you can proudly present to stakeholders. This demo is outputting to PDF, where one of my favorite features is the ability to scale images without pixelation artifacts. Additionally, HTML, .docx, and various presenter files are also options. That list also includes a wealth of [additional formats](https://quarto.org/docs/gallery/) and the ability to publish dynamic content to websites.
+
+All the code and files for this demo can be found [here](https://github.com/davidmvermillion/QuartoDemo).
+
+# LaTeX Table Demo
+
+\begin{table}[!h]
+\centering
+\caption{\label{first-five-data-entries}First 5 Data Entries}
+\begin{tabular*}{3in}{p{2in}|p{0.5in}}
+ First Five Sunspot Counts & Months  \\
+\midrule
+ 58 & 1 \\
+ 62.6 & 2 \\
+ 70 & 3  \\
+ 55.7 & 4  \\
+ 85 & 5  \\
+\end{tabular*}
+\end{table}
+
+```{r}
+#| echo: false
+#| fig-cap:
+#|   - "Jagged Lines in Original Line Chart"
+
+# Plot raw data
+data %>% ggplot(aes(x = index, y = x)) +
+  theme_void2(
+    ) +
+  geom_line(color = '#e34234', size = 1) +
+  ggtitle('Sunspots from 1749 and 1750')
+```
+
+```{r}
+#| echo: false
+#| fig-cap:
+#|   - "Smoothed Points from Splined Data"
+
+# Plot smoothed data
+data %>% ggplot(aes(x = index, y = x)) +
+  theme_void2(
+  ) +
+  geom_xspline(spline_shape=-0.4, size=1, color = '#e34234') +
+  ggtitle('Sunspots from 1749 and 1750')
+```
+
+
+## Bonus for R
+
+In the Python demo, I showed how you could render dynamic code variables inside LaTeX equations through a markdown interpreter. However, RStudio allows for inline code (although not necessarily inside an equation). For example, $\frac{R_a^2}{0.0002}$ = `r mean(data$x)`
+
+
+# Format Comparisons
+
+You can [format](https://quarto.org/docs/authoring/markdown-basics.html) text per Markdown standards, with LaTeX, and additional standards. Some common examples include *italics*, **bold**, superscript^sup^, subscript~submarine~, ~~strikethrough~~, and `code snippets`. \
+
+Markdwon headers follow standard levels. For example, the first 4 levels look like this:
+
+# Header 1
+## Header 2
+### Header 3
+#### Header 4
+
+## Lists
+
+Additionally, lists can be unordered or ordered.
+
+- $H_0: model\ slope = 0$
+  - An extra
+    - An additional extra
+- $H_a: model\ slope \neq 0$
+- Significance $\alpha = 0.1$
+
+1. Ice cream
+2. Cookies
+3. Cake
+
+# Conclusion
+
+Quarto is incredibly powerful. This is a quick example of how you can easily create a polished PDF report using Python as your programming language and choose multiple ways to cleanly present your findings.
