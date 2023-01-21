@@ -62,7 +62,6 @@ data$index = 1:length(data$x)
 
 ```
 
-
 # Executive Summary
 
 [Quarto](https://quarto.org) is amazing! While you can generate PDFs from Jupyter Notebooks, the formatting options are extremely minimal and the result is not a polished product.
@@ -73,6 +72,7 @@ All the code and files for this demo can be found [here](https://github.com/davi
 
 # LaTeX Table Demo
 
+```{=tex}
 \begin{table}[!h]
 \centering
 \caption{\label{first-five-data-entries}First 5 Data Entries}
@@ -86,7 +86,7 @@ All the code and files for this demo can be found [here](https://github.com/davi
  85 & 5  \\
 \end{tabular*}
 \end{table}
-
+```
 ```{r}
 #| echo: false
 #| fig-cap:
@@ -113,36 +113,37 @@ data %>% ggplot(aes(x = index, y = x)) +
   ggtitle('Sunspots from 1749 and 1750')
 ```
 
-
 ## Bonus for R
 
 In the Python demo, I showed how you could render dynamic code variables inside LaTeX equations through a markdown interpreter. However, RStudio allows for inline code (although not necessarily inside an equation). For example, $\frac{R_a^2}{0.0002}$ = `r mean(data$x)`
 
-
 # Format Comparisons
 
-You can [format](https://quarto.org/docs/authoring/markdown-basics.html) text per Markdown standards, with LaTeX, and additional standards. Some common examples include *italics*, **bold**, superscript^sup^, subscript~submarine~, ~~strikethrough~~, and `code snippets`. \
+You can [format](https://quarto.org/docs/authoring/markdown-basics.html) text per Markdown standards, with LaTeX, and additional standards. Some common examples include *italics*, **bold**, superscript^sup^, subscript~submarine~, ~~strikethrough~~, and `code snippets`.\
 
 Markdwon headers follow standard levels. For example, the first 4 levels look like this:
 
 # Header 1
+
 ## Header 2
+
 ### Header 3
+
 #### Header 4
 
 ## Lists
 
 Additionally, lists can be unordered or ordered.
 
-- $H_0: model\ slope = 0$
-  - An extra
-    - An additional extra
-- $H_a: model\ slope \neq 0$
-- Significance $\alpha = 0.1$
+-   $H_0: model\ slope = 0$
+    -   An extra
+        -   An additional extra
+-   $H_a: model\ slope \neq 0$
+-   Significance $\alpha = 0.1$
 
-1. Ice cream
-2. Cookies
-3. Cake
+1.  Ice cream
+2.  Cookies
+3.  Cake
 
 # Conclusion
 
