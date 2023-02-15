@@ -1,0 +1,179 @@
+---
+title: "R Markdown Comparison"
+author: "David M Vermillion"
+date: "`r format(Sys.time(), '%d %B, %Y')`"
+output: 
+  pdf_document: 
+    toc: true
+editor_options: 
+  markdown: 
+    wrap: 72
+header-includes:
+  - \usepackage{float}
+  - \floatplacement{figure}{H}
+---
+
+\newpage
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, fig.pos = "H")
+
+# Workspace Initialization -------------------------------------------------
+
+packages <- c('tidyverse', 'ggalt', 'reticulate')
+lapply(packages, library, character.only = TRUE)
+
+# ggplot Theme ----
+theme_void2 <- function(base_size = 12,
+                          base_family = "",
+                          base_line_size = base_size / 170,
+                          base_rect_size = base_size / 170){
+  theme_minimal(base_size = base_size, 
+                base_family = base_family,
+                base_line_size = base_line_size) %+replace%
+    theme(
+      axis.title.y = element_blank(),
+      axis.title.x = element_blank(),
+      axis.text = element_blank(),
+      axis.line = element_blank(),
+      axis.ticks = element_blank(),
+      plot.title = element_text(hjust = 0.5, size = 28, color = "grey40",
+                                margin =
+                                  margin(t = 0, r = 0, b = 10, l = 0,
+                                         unit = "pt")),
+      panel.grid = element_blank(),
+      plot.subtitle = element_text(hjust = 0.5, size = 20, color = "grey40",
+                                   margin =
+                                     margin(t = 10, r = 0, b = 0, l = 0,
+                                            unit = "pt")),
+      legend.title = element_text(size = 15, color = "grey40"),
+      legend.text = element_text(size = 12, color = "grey30"),
+      complete = TRUE
+    )
+}
+
+# Load Data ----
+
+data_raw <- as_tibble(sunspot.month)
+data <- head(data_raw, 24)
+data$index = 1:length(data$x)
+
+```
+
+# Executive Summary
+
+[Quarto](https://quarto.org) was developed based on experiences from [R Markdown](https://R Markdown.rstudio.com). R Markdown is still amazing! While I recommend Quarto for most uses, if you have a need to weave multiple languages into the same document, that feature is currently unsupported in Quarto, but is supported in R Markdown.
+
+Like Quarto, R Markdown allows you to create a product based off of [Pandoc](https://pandoc.org) that you can proudly present to stakeholders. This demo is outputting to PDF, where one of my favorite features is the ability to scale images without pixelation artifacts. Additionally, HTML, .docx, and various presenter files are also options. That list also includes a wealth of [additional formats](https://R Markdown.rstudio.com/formats.html) and the ability to publish dynamic content to websites.
+
+All the code and files for this demo can be found [here](https://github.com/davidmvermillion/QuartoDemo).
+
+# LaTeX Table Demo
+
+Excluded! More complicated than in Quarto. You can use the [Kable](https://bookdown.org/yihui/rmarkdown-cookbook/kable.html) or [KableExtra](https://bookdown.org/yihui/rmarkdown-cookbook/kableextra.html) packages or spend additional time specifying required LaTeX packages to make your table work.
+
+```{r, include = TRUE, echo = FALSE, fig.align = 'center', fig.cap = "Jagged Lines in Original Line Chart"}
+
+# Plot raw data
+data %>% ggplot(aes(x = index, y = x)) +
+  theme_void2(
+    ) +
+  geom_line(color = '#e34234', size = 1) +
+  ggtitle('Sunspots from 1749 and 1750')
+```
+
+```{r, include = TRUE, echo = FALSE, fig.align = 'center', fig.cap = "Smoothed Points from Splined Data"}
+#| echo: false
+#| fig-cap:
+#|   - "Smoothed Points from Splined Data"
+
+# Plot smoothed data
+data %>% ggplot(aes(x = index, y = x)) +
+  theme_void2(
+  ) +
+  geom_xspline(spline_shape=-0.4, size=1, color = '#e34234') +
+  ggtitle('Sunspots from 1749 and 1750')
+```
+
+```{python, include = FALSE}
+# Packages
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+
+
+# Import data
+data = r.data
+data = data.rename(columns = {'index': 'Months', 'x': 'Sunspots'})
+
+# Plot raw data
+fig1, ax = plt.subplots()
+plt.plot(data['Months'], data['Sunspots'], color = '#e34234')
+ax.set_title('Sunspots from 1749 and 1750', fontsize = 30).set_color('#505050')
+ax.tick_params(axis='y', which='both', right=False,
+                left=False, colors = '#101010')
+ax.tick_params(axis='x', which='both', bottom=False, colors = '#101010')
+for pos in ['right', 'top', 'left', 'bottom']:
+   plt.gca().spines[pos].set_visible(False)
+plt.xticks([])
+plt.yticks([])
+
+# fig4, ax = plt.subplots(figsize=(8,5), layout='constrained')
+# ax.set_title('Clearly Scattered, but Linear Trend', fontsize = 25, pad = 25).set_color('#171819')
+# ax.scatter(faithful['eruptions'], faithful['waiting'], color = '#2d3047')
+# ax.tick_params(axis='y', which = 'both', right = False,
+#                 left = False, colors = '#101010')
+# ax.tick_params(axis='x', which = 'both', top = False,
+#                 bottom = False, colors = '#101010')
+# for pos in ['right', 'top']:
+#    plt.gca().spines[pos].set_visible(False)
+# ax.spines['bottom'].set_color('#A0A0A0')
+# ax.spines['left'].set_color('#A0A0A0')
+# ax.tick_params(axis = 'x', colors = '#282828')
+# ax.set_xlabel('Eruption Time (min)', fontsize = 15, loc = 'left', labelpad = 10).set_color('#393d3f')
+# ax.set_ylabel('Wait\nTime\n(min)', fontsize = 15, loc = 'bottom', rotation = 'horizontal', labelpad = 50).set_color('#393d3f')
+
+```
+
+```{python, include = TRUE, fig.cap = 'Original Chart in Matplotlib, Accessing R Data'}
+
+plt.show();
+
+```
+
+## Inline Code
+
+R Markdown also allows for inline code (although not necessarily inside an equation). For example, $\frac{R_a^2}{0.0002}$ = `r mean(data$x)`
+
+# Format Comparisons
+
+You can [format](https://R Markdown.rstudio.com/lesson-8.html) text per Markdown standards, with LaTeX, and additional standards. Some common examples include *italics*, **bold**, superscript^sup^, subscript~submarine~, ~~strikethrough~~, and `code snippets`.\
+
+Markdwon headers follow standard levels. For example, the first 4 levels look like this:
+
+# Header 1
+
+## Header 2
+
+### Header 3
+
+#### Header 4
+
+## Lists
+
+Additionally, lists can be unordered or ordered.
+
+-   $H_0: model\ slope = 0$
+    -   An extra
+        -   An additional extra
+-   $H_a: model\ slope \neq 0$
+-   Significance $\alpha = 0.1$
+
+1.  Ice cream
+2.  Cookies
+3.  Cake
+
+# Conclusion
+
+Quarto and R Markdown are both incredibly powerful. This is a quick example of how you can easily create a polished PDF report using R and Python as your programming languages and choose multiple ways to cleanly present your findings.
+
