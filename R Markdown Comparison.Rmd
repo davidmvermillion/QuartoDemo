@@ -118,21 +118,6 @@ for pos in ['right', 'top', 'left', 'bottom']:
 plt.xticks([])
 plt.yticks([])
 
-# fig4, ax = plt.subplots(figsize=(8,5), layout='constrained')
-# ax.set_title('Clearly Scattered, but Linear Trend', fontsize = 25, pad = 25).set_color('#171819')
-# ax.scatter(faithful['eruptions'], faithful['waiting'], color = '#2d3047')
-# ax.tick_params(axis='y', which = 'both', right = False,
-#                 left = False, colors = '#101010')
-# ax.tick_params(axis='x', which = 'both', top = False,
-#                 bottom = False, colors = '#101010')
-# for pos in ['right', 'top']:
-#    plt.gca().spines[pos].set_visible(False)
-# ax.spines['bottom'].set_color('#A0A0A0')
-# ax.spines['left'].set_color('#A0A0A0')
-# ax.tick_params(axis = 'x', colors = '#282828')
-# ax.set_xlabel('Eruption Time (min)', fontsize = 15, loc = 'left', labelpad = 10).set_color('#393d3f')
-# ax.set_ylabel('Wait\nTime\n(min)', fontsize = 15, loc = 'bottom', rotation = 'horizontal', labelpad = 50).set_color('#393d3f')
-
 ```
 
 ```{python, include = TRUE, fig.cap = 'Original Chart in Matplotlib, Accessing R Data'}
